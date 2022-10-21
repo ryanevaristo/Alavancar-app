@@ -16,6 +16,16 @@ class UserSchema(BaseModel):
         orm_mode: True
 
 
+class UserSchemaUp(UserSchema):
+    name: Optional[str]
+    age: Optional[int]
+    email: Optional[EmailStr]
+    fone: Optional[str]
+    address: Optional[str]
+    instagram: Optional[str]
+    senha: Optional[str]
+
+
 class UserEnterpriseSchema(UserSchema):
     cnpj: str
     city: str
@@ -24,3 +34,12 @@ class UserEnterpriseSchema(UserSchema):
     category: str
     id_category: Optional[int]
     func: bool
+
+
+class UserEnterpriseSchemaUp(UserSchema):
+    cnpj: Optional[str]
+    city: Optional[str]
+    state: Optional[str]
+    cep: Optional[str]
+    category: Optional[str]
+    func: Optional[bool]
