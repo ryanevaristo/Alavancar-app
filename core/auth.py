@@ -12,7 +12,7 @@ from jose import jwt
 
 from models.Usuario import UserModel
 from core.config import settings
-from core.security import verificar_senha
+from core.security import verify_password
 
 from pydantic import EmailStr
 

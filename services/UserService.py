@@ -1,11 +1,8 @@
 from ast import Delete
-from email.headerregistry import Address
-from multiprocessing import synchronize
 from turtle import update
 from typing import Optional
-from typing_extensions import Self
 from sqlalchemy.orm import Session
-from schema.UsuarioSchema import UserSchema, UserSchemaUp
+from schemas.UserSchema import UserSchema, UserSchemaUp
 from models.Usuario import UserModel
 from core.security import generate_hash_password
 from core.auth import authentication, criar_token_acesso
