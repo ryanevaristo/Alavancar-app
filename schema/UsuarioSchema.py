@@ -8,7 +8,7 @@ class UserSchema(BaseModel):
     age: int
     email: EmailStr
     fone: str
-    address: str
+    #address: str
     instagram: str
     senha: str
 
@@ -21,7 +21,7 @@ class UserSchemaUp(UserSchema):
     age: Optional[int]
     email: Optional[EmailStr]
     fone: Optional[str]
-    address: Optional[str]
+    #address: Optional[str]
     instagram: Optional[str]
     senha: Optional[str]
 

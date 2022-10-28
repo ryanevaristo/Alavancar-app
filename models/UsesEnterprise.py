@@ -22,3 +22,10 @@ class UserEnterprise(settings.DBBaseModel):
     category = Column(String(256, indx=True, nullable=False, unique=True))
     id_category = Column(Integer, autoincrement=True)
     func = Column(Boolean)
+
+    address = relationship('Address',
+                           back_populates="user"
+                           )
+    category = relationship('Category',
+                            back_populates='user'
+                            )
