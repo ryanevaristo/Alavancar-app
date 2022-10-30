@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Column, Boolean
+from sqlalchemy import ForeignKey, Integer, String, Column, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
 from core.config import settings
@@ -12,13 +12,11 @@ class UserEnterprise(settings.DBBaseModel):
     age = Column
     email = Column(String(256), index=True, nullable=False, unique=True)
     fone = Column(String(256), index=True, nullable=False, unique=True)
-    address = Column(String(350), index=True, nullable=False, unique=True)
     instagram = Column(String(256), index=True, nullable=False, unique=True)
     senha = Column(String(256), index=True, nullable=False, unique=True)
     cnpj = Column(String(256), index=True, nullable=False, unique=True)
     city = Column(String(256), index=True, nullable=False, unique=True)
     state = Column(String(256), index=True, nullable=False, unique=True)
     cep = Column(String(256), index=True, nullable=False, unique=True)
-    category = Column(String(256), index=True, nullable=False, unique=True)
-    id_category = Column(Integer, autoincrement=True)
     func = Column(Boolean)
+    category_id = Column(Integer, ForeignKey('category.id_category'))

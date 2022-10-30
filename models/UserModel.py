@@ -1,4 +1,5 @@
-from sqlalchemy import Integer, String, Column, Boolean
+from unicodedata import category
+from sqlalchemy import ForeignKey, Integer, String, Column, Boolean
 from sqlalchemy.orm import relationship
 
 from core.config import settings
@@ -12,6 +13,10 @@ class UserModel(settings.DBBaseModel):
     age = Column
     email = Column(String(256), index=True, nullable=False, unique=True)
     fone = Column(String(256), index=True, nullable=False, unique=True)
-    address = Column(String(350), index=True, nullable=False, unique=True)
     instagram = Column(String(256), index=True, nullable=False, unique=True)
     senha = Column(String(256), index=True, nullable=False, unique=True)
+    category_id = Column(Integer, ForeignKey('category.id_category'))
+    category: relationship = relationship(
+        "CategoryModel",
+        back_populates="created"
+    )

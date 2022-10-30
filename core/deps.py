@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from core.database import Session
 from core.auth import oauth2_schema
 from core.config import settings
-from models.Usuario import UserModel
+from models.UserModel import UserModel
 from models.UserEnterprise import UserEnterprise
 
 
