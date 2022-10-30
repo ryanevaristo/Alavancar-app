@@ -3,7 +3,7 @@ from turtle import update
 from typing import Optional
 from sqlalchemy.orm import Session
 from schemas.UserSchema import UserEnterpriseSchema, UserEnterpriseSchemaUp
-from models.UsesEnterprise import UserEnterprise
+from models.UserEnterprise import UserEnterprise
 from core.security import generate_hash_password
 from core.auth import authentication, criar_token_acesso
 from sqlalchemy.future import select

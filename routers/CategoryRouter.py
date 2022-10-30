@@ -1,11 +1,10 @@
-from models.CategoryModel import CategoryModel
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 
 
-from sqlalchemy import select
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from schemas.CategorySchema import CategorySchemaCreate, CategorySchema
+from schemas.CategorySchema import CategorySchemaCreate
 
 from core.deps import get_session
 

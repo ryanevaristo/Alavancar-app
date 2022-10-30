@@ -9,4 +9,4 @@ class CategoryModel(settings.DBBaseModel):
 
     id_category = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(256), nullable=True)
-    created: relationship = relationship("UserModel", back_populates='category')
+    created_user: relationship = relationship("UserModel", back_populates='category')
