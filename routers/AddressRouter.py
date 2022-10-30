@@ -32,7 +32,7 @@ async def get_address(session: AsyncSession = Depends(get_session)):
 
 
 # GET /address/{id}
-@router.get("/address/{ind}", status_code=status.HTTP_200_OK, response_model=AddressSchemaCreate)
+@router.get("/address/{id}", status_code=status.HTTP_200_OK, response_model=AddressSchemaCreate)
 async def get_address_by_id(id: int, session: AsyncSession = Depends(get_session)):
     try:
         service = AddressService(session)
