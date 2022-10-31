@@ -2,31 +2,29 @@ from ast import Delete
 from turtle import update
 from typing import Optional
 from sqlalchemy.orm import Session
-from schemas.UserSchema import UserSchema, UserSchemaUp
-from models.Usuario import UserModel
+from schemas.UserSchema import UserSchemaBase, UserSchemaUp, UserSchemaCreate
+from models.UserModel import UserModel
 from core.security import generate_hash_password
 from core.auth import authentication, criar_token_acesso
 from sqlalchemy.future import select
 
 
-class User():
-    def __init__(self, db: Session):
-        self.db = db
+class UserService():
+    def __init__(self, session: Session):
+        self.session = session
 
-    async def create_user(self, user: UserSchema):
+    async def create(self, user: UserSchemaCreate):
         new_user = UserModel(
             name=user.name,
             age=user.age,
             email=user.email,
             senha=generate_hash_password(user.senha),
             fone=user.fone,
-            address=user.address,
             instagram=user.instagram
         )
 
-        self.db.add(new_user)
-        self.db.commit()
-        self.db.refresh(new_user)
+        self.session.add(new_user)
+        await self.session.commit()
         return new_user
 
     async def Update(self, user: UserSchemaUp, id: int):

@@ -15,14 +15,9 @@ class UserModel(settings.DBBaseModel):
     fone = Column(String(256), index=True, nullable=False, unique=True)
     instagram = Column(String(256), index=True, nullable=False, unique=True)
     senha = Column(String(256), index=True, nullable=False, unique=True)
-    category_id = Column(Integer, ForeignKey('category.id_category'))
-    address_id = Column(Integer, ForeignKey('address.id_address'))
-    category: relationship = relationship(
-        "CategoryModel",
-        back_populates="created_user"
-    )
     address: relationship = relationship(
         "AddressModel",
+        cascade="all, delete-orphan",
         back_populates="created_user_ad",
         uselist=True,
         lazy="joined"

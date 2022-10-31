@@ -1,16 +1,15 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
-from CategorySchema import CategorySchema
-from AddressSchema import AddressSchema
+from schemas.CategorySchema import CategorySchemaCreate
+from schemas.AddressSchema import AddressSchema
 
 
 class UserSchemaBase(BaseModel):
-    id_user: int
+    id_user: Optional[int]
     name: str
     age: int
-    email: EmailStr
+    email: EmailStr 
     fone: str
-    address: Optional[List[AddressSchema]]
     instagram: str
 
     class config:
@@ -19,6 +18,10 @@ class UserSchemaBase(BaseModel):
 
 class UserSchemaCreate(UserSchemaBase):
     senha: str
+
+
+class UserSchemaAddress(UserSchemaBase):
+    address: Optional[List[AddressSchema]]= []
 
 class UserSchemaUp(UserSchemaBase):
     name: Optional[str]
@@ -35,7 +38,7 @@ class UserEnterpriseSchema(UserSchemaBase):
     city: str
     state: str
     cep: str
-    category: List[CategorySchema]
+    category: Optional[List[CategorySchemaCreate]]
     func: bool
 
 class UserEnterpriseSchemaCreate(UserEnterpriseSchema):
@@ -46,5 +49,5 @@ class UserEnterpriseSchemaUp(UserSchemaBase):
     city: Optional[str]
     state: Optional[str]
     cep: Optional[str]
-    category: Optional[List[CategorySchema]]
+    category: Optional[List[CategorySchemaCreate]]
     func: Optional[bool]

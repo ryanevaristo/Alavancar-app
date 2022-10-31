@@ -9,6 +9,7 @@ class AddressSchema(BaseModel):
     city: str
     state: str
     cep: str
+    user_id: int
     class Config:
         orm_mode = True
 
@@ -25,3 +26,4 @@ class AddressSchemaUp(AddressSchema):
     city: Optional[str]
     state: Optional[str]
     cep: Optional[str]
+    user_id: Optional[int]

@@ -20,3 +20,7 @@ class UserEnterprise(settings.DBBaseModel):
     cep = Column(String(256), index=True, nullable=False, unique=True)
     func = Column(Boolean)
     category_id = Column(Integer, ForeignKey('category.id_category'))
+    category: relationship = relationship(
+        "CategoryModel",
+        back_populates="created_user"
+    )
