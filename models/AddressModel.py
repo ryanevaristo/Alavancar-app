@@ -13,10 +13,6 @@ class AddressModel(settings.DBBaseModel):
     city = Column(String(256), nullable=True)
     state = Column(String(256), nullable=True)
     cep = Column(String(256), nullable=True)
-    user_id = Column(Integer, ForeignKey('address.id_address'))
-    created_user_ad: relationship = relationship(
-        "UserModel",
-        back_populates="address",
-        lazy="joined"
-    )
+    user_id = Column(Integer, ForeignKey('users.id_user'))
+    create_ad: relationship = relationship("UserModel", back_populates='address', lazy='joined')
     

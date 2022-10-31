@@ -1,5 +1,3 @@
-from ast import Delete
-from turtle import update
 from typing import Optional
 from sqlalchemy.orm import Session
 from schemas.UserSchema import UserSchemaBase, UserSchemaUp, UserSchemaCreate
@@ -7,6 +5,7 @@ from models.UserModel import UserModel
 from core.security import generate_hash_password
 from core.auth import authentication, criar_token_acesso
 from sqlalchemy.future import select
+from sqlalchemy import  delete, update
 
 
 class UserService():
@@ -27,54 +26,58 @@ class UserService():
         await self.session.commit()
         return new_user
 
-    async def Update(self, user: UserSchemaUp, id: int):
-        update_user = (
-            update(UserModel).where(UserModel.id_user == id).values(
-                **user.dict()).execution_options(synchronize_session="fetch")
-        )
+    async def update(self, user: UserSchemaUp, id: int):
+        query = select(UserModel).where(UserModel.id_user == id)
+        result = await self.session.execute(query)
+        user_update: UserModel = result.scalars().unique().one_or_none()
+        if user_update:
+            user_update.name = user.name
+            user_update.age = user.age
+            user_update.email = user.email
+            user_update.fone = user.fone
+            user_update.instagram = user.instagram
 
-        await self.db.execute(update_user)
-        return user.dict()
+        await self.session.commit()
+        return user_update
 
-    async def List_users(self, id: Optional[int]):
-        if (id):
-            query = select(UserModel).where(UserModel.id_user == id)
-            result = await self.db.execute(query)
-            return result.one()
-        else:
-            query = select(UserModel)
-            result = await self.db.execute(query)
-            return result.scalars().all()
+    async def get_users(self):
+        query = select(UserModel)
+        result = await self.session.execute(query)
+        return result.scalars().unique().all()
+    
+    async def get_by_id(self, id: int):
+        query = select(UserModel).where(UserModel.id_user == id)
+        result = await self.session.execute(query)
+        return result.scalars().unique().one_or_none()
 
-    async def remove(self, id: int):
-        query = Delete(UserModel).where(UserModel.id_user == id)
-        await self.db.execute(query)
+
+
+    async def login(self, user: UserSchemaBase):
+        query = select(UserModel).where(UserModel.email == user.email)
+        result = await self.session.execute(query)
+        user_login: UserModel = result.scalars().unique().one_or_none()
+        if user_login:
+            if authentication(user.senha, user_login.senha):
+                return criar_token_acesso(user_login.id_user)
+        return None
+
+    async def update_senha(self, user: UserSchemaUp, id: int):
+        query = select(UserModel).where(UserModel.id_user == id)
+        result = await self.session.execute(query)
+        user_update: UserModel = result.scalars().unique().one_or_none()
+        if user_update:
+            user_update.senha = generate_hash_password(user.senha)
+
+        await self.session.commit()
+        return user_update
+        
+
+    async def delete(self, id: int):
+        query = delete(UserModel).where(UserModel.id_user == id)
+        userDelete: UserModel = await self.session.execute(query)
+        await self.session.commit()
+        return userDelete
 
     async def get_email(self, email: str):
         query = select(UserModel).where(UserModel.email == email)
-        return self.db.execute(query)
-
-
-'''
-    async def create_user_enterprise(self, user_enterprise: UserEnterpriseSchema):
-        new_user = UserEnterprise(
-            name=user_enterprise.name,
-            age=user_enterprise.age,
-            email=user_enterprise.email,
-            senha=generate_hash_password(user_enterprise.senha),
-            fone=user_enterprise.fone,
-            address=user_enterprise.address,
-            instagram=user_enterprise.instagram,
-            cnpj=user_enterprise.cnpj,
-            city=user_enterprise.city,
-            state=user_enterprise.state,
-            cep=user_enterprise.cep,
-            category=user_enterprise.category,
-            func=user_enterprise.func
-
-        )
-        self.db.add(new_user)
-        self.db.commit()
-        self.db.refresh(new_user)
-        return new_user
-        '''
+        return self.session.execute(query)

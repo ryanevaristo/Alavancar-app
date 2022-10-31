@@ -1,34 +1,34 @@
 from pydantic import BaseModel, EmailStr
+from datetime import date
 from typing import Optional, List
 from schemas.CategorySchema import CategorySchemaCreate
-from schemas.AddressSchema import AddressSchema
+from schemas.AddressSchema import AddressSchemaCreate
 
 
 class UserSchemaBase(BaseModel):
-    id_user: Optional[int]
+    id_user: Optional[int] = None
     name: str
-    age: int
+    age: date
     email: EmailStr 
     fone: str
     instagram: str
 
-    class config:
-        orm_mode: True
+    class Config:
+        orm_mode = True
 
 
 class UserSchemaCreate(UserSchemaBase):
     senha: str
 
 
-class UserSchemaAddress(UserSchemaBase):
-    address: Optional[List[AddressSchema]]= []
+class UserSchemaAddress(UserSchemaCreate):
+    address: Optional[List[AddressSchemaCreate]]= []
 
 class UserSchemaUp(UserSchemaBase):
     name: Optional[str]
-    age: Optional[int]
+    age: Optional[date]
     email: Optional[EmailStr]
     fone: Optional[str]
-    address: Optional[List[AddressSchema]]
     instagram: Optional[str]
     senha: Optional[str]
 

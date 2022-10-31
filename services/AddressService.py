@@ -17,7 +17,8 @@ class AddressService:
             complement=address.complement,
             city=address.city,
             state=address.state,
-            cep=address.cep
+            cep=address.cep,
+            user_id=address.user_id
         )
         self.session.add(new_address)
         await self.session.commit()
@@ -25,7 +26,7 @@ class AddressService:
     async def get_all(self):
         query = select(AddressModel)
         result: AddressModel = await self.session.execute(query)
-        return result.scalars().all()
+        return result.scalars().unique().all()
 
     async def get_by_id(self, id: int):
         query = select(AddressModel).where(AddressModel.id_address == id)
