@@ -35,19 +35,16 @@ class UserSchemaUp(UserSchemaBase):
 
 class UserEnterpriseSchema(UserSchemaBase):
     cnpj: str
-    city: str
-    state: str
-    cep: str
-    category: Optional[List[CategorySchemaCreate]]
+    category: Optional[List[CategorySchemaCreate]] = []
     func: bool
 
 class UserEnterpriseSchemaCreate(UserEnterpriseSchema):
     senha: str
 
+class UserEnterpriseSchemaAddress(UserEnterpriseSchemaCreate):
+    address: Optional[List[AddressSchemaCreate]]= []
+
 class UserEnterpriseSchemaUp(UserSchemaBase):
     cnpj: Optional[str]
-    city: Optional[str]
-    state: Optional[str]
-    cep: Optional[str]
-    category: Optional[List[CategorySchemaCreate]]
+    category: Optional[List[CategorySchemaCreate]] = []
     func: Optional[bool]
