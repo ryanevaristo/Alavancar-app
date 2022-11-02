@@ -14,7 +14,7 @@ from services.UserService import UserService
 router = APIRouter()
 
 # POST /user
-@router.post("/user", status_code=status.HTTP_201_CREATED, response_model=UserSchemaBase)
+@router.post("/signin", status_code=status.HTTP_201_CREATED, response_model=UserSchemaBase)
 async def create_user(user: UserSchemaCreate, session: AsyncSession = Depends(get_session)):
     try:
         service = UserService(session)

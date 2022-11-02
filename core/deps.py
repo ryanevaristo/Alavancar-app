@@ -8,7 +8,7 @@ from core.database import Session
 from core.auth import oauth2_schema
 from core.config import settings
 from models.UserModel import UserModel
-from models.UserEnterprise import UserEnterprise
+from models.UserEnterpriseModel import UserEnterpriseModel
 
 
 class TokenData(BaseModel):

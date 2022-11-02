@@ -1,18 +1,15 @@
-from ast import Delete
-from turtle import update
-from typing import Optional
-from sqlalchemy.orm import Session
+from sqlalchemy import update, delete
+from sqlalchemy.orm import Session, selectinload
 from schemas.UserSchema import UserEnterpriseSchema, UserEnterpriseSchemaUp, UserEnterpriseSchemaCreate
 from models.UserEnterpriseModel import UserEnterpriseModel
 from core.security import generate_hash_password
 from core.auth import authentication, criar_token_acesso
 from sqlalchemy.future import select
 
-
-class User():
-    def __init__(self, db: Session):
-        self.db = db
-
+class UserEnterpriseService():
+    def __init__(self, session: Session):
+        self.session = session
+    
     async def create_user_enterprise(self, user_enterprise: UserEnterpriseSchemaCreate):
         new_user = UserEnterpriseModel(
             name=user_enterprise.name,
@@ -26,34 +23,49 @@ class User():
             func=user_enterprise.func
 
         )
-        self.db.add(new_user)
-        self.db.commit()
-        self.db.refresh(new_user)
+        self.session.add(new_user)
+        await self.session.commit()
         return new_user
 
-    async def Update(self, user_enterprise: UserEnterpriseSchemaUp, id: int):
-        update_user = (
-            update(UserEnterpriseModel).where(UserEnterpriseModel.id_user == id).values(
-                **user_enterprise.dict()).execution_options(synchronize_session="fetch")
-        )
+    async def update_user_enterprise(self, user_enterprise: UserEnterpriseSchemaUp, id: int):
+        query = select(UserEnterpriseModel).where(UserEnterpriseModel.id_user == id).options(selectinload(UserEnterpriseModel.category))
+        result = await self.session.execute(query)
+        user_update: UserEnterpriseModel = result.scalars().unique().one_or_none()
+        if user_update:
+            user_update.name = user_enterprise.name
+            user_update.age = user_enterprise.age
+            user_update.email = user_enterprise.email
+            user_update.fone = user_enterprise.fone
+            user_update.instagram = user_enterprise.instagram
+            user_update.cnpj = user_enterprise.cnpj
+            user_update.category = user_enterprise.category
+            user_update.func = user_enterprise.func
 
-        await self.db.execute(update_user)
-        return user_enterprise.dict()
+        await self.session.commit()
+        return user_update
 
-    async def List_users(self, id: Optional[int]):
-        if (id):
-            query = select(UserEnterpriseModel).where(UserEnterpriseModel.id_user == id)
-            result = await self.db.execute(query)
-            return result.one()
-        else:
-            query = select(UserEnterpriseModel)
-            result = await self.db.execute(query)
-            return result.scalars().all()
+    async def get_users_enterprise(self):
+        query = select(UserEnterpriseModel).options(selectinload(UserEnterpriseModel.category))
+        result = await self.session.execute(query)
+        return result.scalars().unique().all()
 
-    async def remove(self, id: int):
-        query = Delete(UserEnterpriseModel).where(UserEnterpriseModel.id_user == id)
-        await self.db.execute(query)
+    async def get_by_id_user_enterprise(self, id: int):
+        query = select(UserEnterpriseModel).where(UserEnterpriseModel.id_user == id).options(selectinload(UserEnterpriseModel.category))
+        result = await self.session.execute(query)
+        return result.scalars().unique().one_or_none()
 
-    async def get_email(self, email: str):
-        query = select(UserEnterpriseModel).where(UserEnterpriseModel.email == email)
-        return self.db.execute(query)
+    async def login_user_enterprise(self, user_enterprise: UserEnterpriseSchemaCreate):
+        query = select(UserEnterpriseModel).where(UserEnterpriseModel.email == user_enterprise.email)
+        result = await self.session.execute(query)
+        user_login: UserEnterpriseModel = result.scalars().unique().one_or_none()
+        if user_login:
+            if authentication(user_enterprise.senha, user_login.senha):
+                token = criar_token_acesso(user_login.id_user)
+                return token
+        return None
+
+    async def delete_user_enterprise(self, id: int):
+        query = delete(UserEnterpriseModel).where(UserEnterpriseModel.id_user == id).options(selectinload(UserEnterpriseModel.category))
+        user_delete = await self.session.execute(query)
+        await self.session.commit()
+        return user_delete
